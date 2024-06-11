@@ -43,8 +43,8 @@ jobs:
 
     - name: Push Docker image to DockerHub
       run: |
-        docker tag yourusername/fastapi-app:latest yourusername/fastapi-app:latest
-        docker push yourusername/fastapi-app:latest
+        docker tag gaganr31/api-app:latest gaganr31/api-app:latest
+        docker push gaganr31/api-app:latest
 
     - name: Set up kubectl
       uses: azure/setup-kubectl@v1
