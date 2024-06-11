@@ -60,7 +60,7 @@ jobs:
         clusters:
         - cluster:
             certificate-authority-data: ${{ secrets.KUBE_CA_PEM }}
-            server: http://127.0.0.1
+            server: https://10.96.0.1
           name: cluster-name
         contexts:
         - context:
