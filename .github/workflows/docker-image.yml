@@ -75,7 +75,6 @@ jobs:
         client-key-data: ${{ secrets.KUBE_KEY_PEM }}
     " > $HOME/.kube/config
 
-
     - name: Install Helm
       run: |
         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
