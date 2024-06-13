@@ -48,7 +48,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build . -t gaganr31/api-app:${{ env.commit_sha }}
+        docker build -t gaganr31/api-app:${{ env.commit_sha }} .
         echo "Built Docker image: gaganr31/api-app:${{ env.commit_sha }}"  # Print full Docker image name with tag
     - name: Login to DockerHub
       uses: docker/login-action@v2
@@ -59,20 +59,3 @@ jobs:
     - name: Push Docker image to DockerHub
       run: |
         docker push gaganr31/api-app:${{ env.commit_sha }}
-
-   # - name: Set up kubectl
-    #  uses: azure/setup-kubectl@v1
-     # with:
-      #  version: 'latest'
-
-    #- name: Configure kubeconfig
-     # run: |
-      #  export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig
-
-    #- name: Uninstall Helm app
-     # run: |
-      #  helm uninstall api-app
-
-    #- name: Install Helm app
-     # run: |
-      #  helm upgrade api-app /home/ubuntu/API-Tutotial/chart/api-app --set image.tag=${{ env.tag }}
