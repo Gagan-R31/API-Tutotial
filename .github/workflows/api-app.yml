@@ -48,8 +48,8 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t gaganr31/api-app:${{ env.commit_sha }} .
-        echo "Built Docker image: gaganr31/api-app:${{ env.commit_sha }}"  # Print full Docker image name with tag
+        docker build -t gaganr31/api-app:1.0.0 .
+     #   echo "Built Docker image: gaganr31/api-app:${{ env.commit_sha }}"  # Print full Docker image name with tag
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
