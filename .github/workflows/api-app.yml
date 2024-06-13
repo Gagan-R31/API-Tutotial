@@ -74,4 +74,4 @@ jobs:
 
     - name: Install Helm app
       run: |
-        helm install api1-app ./chart/api-app --set image.tag=${{ env.tag }} --set service.externalIP=${{ env.EXTERNAL_IP }}
+        helm upgrade api1-app ./chart/api-app --set image.tag=${{ env.tag }}
