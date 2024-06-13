@@ -15,9 +15,11 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      EC2_HOST: ${{ secrets.EC2_HOST }}
-      EC2_USER: ${{ secrets.EC2_USER }}
+      KUBE_CA_PEM: ${{ secrets.KUBE_CA_PEM }}
+      KUBE_API_SERVER: ${{ secrets.KUBE_API_SERVER }}
+      KUBE_CRET_PEM: ${{ secrets.KUBE_CRET_PEM }}
+      KUBE_KEY_PEM: ${{ secrets.KUBE_KEY_PEM }}
+      DOCKER_IMAGE: gaganr31/api-app
 
     steps:
     - name: Checkout code
@@ -39,9 +41,13 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
+    - name: Get version
+      id: version
+      run: echo "::set-output name=tag::$(date +%Y%m%d%H%M%S)"
+
     - name: Build Docker image
       run: |
-        docker build . -t gaganr31/api-app:latest
+        docker build . -t ${{ env.DOCKER_IMAGE }}:${{ steps.version.outputs.tag }}
 
     - name: Login to DockerHub
       uses: docker/login-action@v2
@@ -51,25 +57,41 @@ jobs:
 
     - name: Push Docker image to DockerHub
       run: |
-        docker push gaganr31/api-app:latest
+        docker push ${{ env.DOCKER_IMAGE }}:${{ steps.version.outputs.tag }}
 
-    - name: Install SSH client
-      run: sudo apt-get install -y openssh-client
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'
 
-    - name: Add SSH key
+    - name: Configure kubeconfig
       run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
+        mkdir -p $HOME/.kube
+        echo "
+        apiVersion: v1
+        kind: Config
+        clusters:
+        - cluster:
+            certificate-authority-data: ${{ secrets.KUBE_CA_PEM }}
+            server: https://${{ secrets.KUBE_API_SERVER }}
+          name: cluster-name
+        contexts:
+        - context:
+            cluster: cluster-name
+            user: cluster-user
+          name: context-name
+        current-context: context-name
+        users:
+        - name: cluster-user
+          user:
+            client-certificate-data: ${{ secrets.KUBE_CRET_PEM }}
+            client-key-data: ${{ secrets.KUBE_KEY_PEM }}
+        " > $HOME/.kube/config
 
-    - name: Deploy to EC2
+    - name: Install Helm
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-          # Pull the latest Docker image
-          docker pull gaganr31/api-app:latest
-          # Stop and remove the existing container if it exists
-          docker stop api-app || true
-          docker rm api-app || true
-          # Run the new container
-          docker run -d --name api-app -p 80:80 gaganr31/api-app:latest
-        EOF
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
+    - name: Update Helm values
+      run: |
+        helm upgrade --install api-app ./chart/api-app --namespace=default --set image.tag=${{ steps.version.outputs.tag }}
