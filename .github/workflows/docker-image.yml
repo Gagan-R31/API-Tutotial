@@ -70,8 +70,4 @@ jobs:
 
     - name: Update Helm values
       run: |
-        helm upgrade --install api-app ./chart/api-app \
-          --namespace=default \
-          --set image.tag=${{ steps.version.outputs.tag }} \
-          --set service.type=LoadBalancer \
-          --set service.loadBalancerIP=${{ env.EXTERNAL_IP }}
+        helm upgrade --install api-app ./chart/api-app 
