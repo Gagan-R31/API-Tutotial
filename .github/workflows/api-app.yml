@@ -58,4 +58,4 @@ jobs:
 
     - name: Push Docker image to DockerHub
       run: |
-        docker push gaganr31/api-app:${{ env.commit_sha }}
+        docker push gaganr31/api-app:1.0.0
