@@ -68,10 +68,10 @@ jobs:
       run: |
         export "KUBECONFIG=${{ secrets.KUBECONFIG }}"
 
-    - name: Uninstall Helm app
-      run: |
-        helm uninstall api-app
+    #- name: Uninstall Helm app
+     # run: |
+      #  helm uninstall api-app
 
     - name: Install Helm app
       run: |
-        helm install api-app ./chart/api-app --set image.tag=${{ env.tag }} --set service.externalIP=${{ env.EXTERNAL_IP }}
+        helm install api1-app ./chart/api-app --set image.tag=${{ env.tag }} --set service.externalIP=${{ env.EXTERNAL_IP }}
