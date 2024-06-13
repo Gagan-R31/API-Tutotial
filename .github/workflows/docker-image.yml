@@ -74,4 +74,4 @@ jobs:
           --namespace=default \
           --set image.tag=${{ steps.version.outputs.tag }} \
           --set service.type=LoadBalancer \
-          --set service.loadBalancerIP=${{ env.CLUSTER_IP }}
+          --set service.loadBalancerIP=${{ env.EXTERNAL_IP }}
