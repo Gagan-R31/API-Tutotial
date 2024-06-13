@@ -51,11 +51,11 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build . -t ${{ env.DOCKER_IMAGE }}:${{ env.tag }}
+        sudo docker build . -t ${{ env.DOCKER_IMAGE }}:${{ env.tag }}
 
     - name: Push Docker image to DockerHub
       run: |
-        docker push ${{ env.DOCKER_IMAGE }}:${{ env.tag }}
+        sudo docker push ${{ env.DOCKER_IMAGE }}:${{ env.tag }}
 
     - name: Set up kubectl
       uses: azure/setup-kubectl@v1
