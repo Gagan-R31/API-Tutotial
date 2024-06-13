@@ -55,3 +55,21 @@ jobs:
 
     - name: Push Docker image to DockerHub
       run: |
+        docker push ${{ env.DOCKER_IMAGE }}:${{ env.tag }}
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'
+
+    - name: Configure kubeconfig
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
+
+    - name: Uninstall Helm app
+      run: |
+        helm uninstall api-app
+
+    - name: Install Helm app
+      run: |
+        helm install api-app ./chart/api-app --set image.tag=${{ env.tag }} --set service.externalIP=${{ env.EXTERNAL_IP }}
