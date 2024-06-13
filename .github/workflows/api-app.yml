@@ -74,4 +74,4 @@ jobs:
 
     - name: Install Helm app
       run: |
-        helm upgrade api1-app ./chart/api-app --set image.tag=${{ env.tag }}
+        helm upgrade api-app ./chart/api-app --set image.tag=${{ env.tag }}
