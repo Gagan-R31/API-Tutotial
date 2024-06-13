@@ -14,7 +14,7 @@ class Item(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to Ini8labs gaganknln"}
+    return {"message": "Welcome to Ini8labs all"}
 
 @app.post("/api/data/")
 def create_item(item: Item):
