@@ -59,19 +59,19 @@ jobs:
       run: |
         docker push gaganr31/api-app:latest
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'latest'
+   # - name: Set up kubectl
+    #  uses: azure/setup-kubectl@v1
+     # with:
+      #  version: 'latest'
 
-    - name: Configure kubeconfig
-      run: |
-        export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig
+    #- name: Configure kubeconfig
+     # run: |
+      #  export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig
 
     #- name: Uninstall Helm app
      # run: |
       #  helm uninstall api-app
 
-    - name: Install Helm app
-      run: |
-        helm upgrade api-app /home/ubuntu/API-Tutotial/chart/api-app --set image.tag=${{ env.tag }}
+    #- name: Install Helm app
+     # run: |
+      #  helm upgrade api-app /home/ubuntu/API-Tutotial/chart/api-app --set image.tag=${{ env.tag }}
