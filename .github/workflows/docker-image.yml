@@ -55,18 +55,14 @@ jobs:
       run: |
         docker push ${{ env.DOCKER_IMAGE }}:${{ steps.version.outputs.tag }}
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'latest'
+   # - name: Set up kubectl
+   #   uses: azure/setup-kubectl@v1
+    #  with:
+     #   version: 'latest'
 
-    - name: Configure kubeconfig
-      run: |
-        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
-    - name: Install Helm
-      run: |
-        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+   # - name: Configure kubeconfig
+    #  run: |
+    #    echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
     - name: Update Helm values
       run: |
