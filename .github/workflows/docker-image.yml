@@ -2,11 +2,8 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    paths:
+      - app.py
 
 jobs:
   build-and-deploy:
@@ -15,10 +12,7 @@ jobs:
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      KUBE_CA_PEM: ${{ secrets.KUBE_CA_PEM }}
-      KUBE_API_SERVER: ${{ secrets.KUBE_API_SERVER }}
-      KUBE_CRET_PEM: ${{ secrets.KUBE_CRET_PEM }}
-      KUBE_KEY_PEM: ${{ secrets.KUBE_KEY_PEM }}
+      KUBECONFIG_DATA: ${{ secrets.KUBECONFIG }}
       DOCKER_IMAGE: gaganr31/api-app
 
     steps:
@@ -66,27 +60,7 @@ jobs:
 
     - name: Configure kubeconfig
       run: |
-        mkdir -p $HOME/.kube
-        echo "
-        apiVersion: v1
-        kind: Config
-        clusters:
-        - cluster:
-            certificate-authority-data: ${{ secrets.KUBE_CA_PEM }}
-            server: https://${{ secrets.KUBE_API_SERVER }}
-          name: cluster-name
-        contexts:
-        - context:
-            cluster: cluster-name
-            user: cluster-user
-          name: context-name
-        current-context: context-name
-        users:
-        - name: cluster-user
-          user:
-            client-certificate-data: ${{ secrets.KUBE_CRET_PEM }}
-            client-key-data: ${{ secrets.KUBE_KEY_PEM }}
-        " > $HOME/.kube/config
+        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
     - name: Install Helm
       run: |
